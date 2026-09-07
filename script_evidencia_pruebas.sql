@@ -1,72 +1,35 @@
--- 1. Creación de la Base de Datos
-CREATE DATABASE SmartPickWeb;
-GO
-
 USE SmartPickWeb;
 GO
 
--- 2. Creación de Tablas de Catálogo y Maestros (Sin dependencias)
-CREATE TABLE PERFILES (
-    id_perfil INT IDENTITY(1,1) PRIMARY KEY,
-    nombre_perfil VARCHAR(50) NOT NULL
-);
+SET IDENTITY_INSERT PERFILES ON;
+INSERT INTO PERFILES (id_perfil, nombre_perfil) VALUES (1, 'Admin'), (2, 'Picker');
+SET IDENTITY_INSERT PERFILES OFF;
 
-CREATE TABLE CATEGORIAS (
-    id_categoria INT IDENTITY(1,1) PRIMARY KEY,
-    nombre_categoria VARCHAR(50) NOT NULL,
-    descripcion VARCHAR(150) NULL
-);
+SET IDENTITY_INSERT UBICACIONES ON;
+INSERT INTO UBICACIONES (id_ubicacion, pasillo, estante, nivel) VALUES (1, 'A', '3', '1');
+SET IDENTITY_INSERT UBICACIONES OFF;
 
-CREATE TABLE UBICACIONES (
-    id_ubicacion INT IDENTITY(1,1) PRIMARY KEY,
-    pasillo VARCHAR(10) NOT NULL,
-    estante VARCHAR(10) NOT NULL,
-    nivel VARCHAR(10) NOT NULL
-);
+SET IDENTITY_INSERT CATEGORIAS ON;
+INSERT INTO CATEGORIAS (id_categoria, nombre_categoria, descripcion) VALUES (1, 'Herramientas', 'Ferretería general');
+SET IDENTITY_INSERT CATEGORIAS OFF;
+----------------------------------------------------------------------------
+INSERT INTO PRODUCTOS (sku, nombre_producto, id_categoria, id_ubicacion) VALUES ('SKU987', 'Martillo', 1, 1);
 
-CREATE TABLE CLIENTES (
-    id_cliente INT IDENTITY(1,1) PRIMARY KEY,
-    nombre_razon_social VARCHAR(100) NOT NULL,
-    rut VARCHAR(12) UNIQUE NOT NULL,
-    direccion VARCHAR(200) NOT NULL
-);
+SET IDENTITY_INSERT CLIENTES ON;
+INSERT INTO CLIENTES (id_cliente, nombre_razon_social, rut, direccion) VALUES (1, 'Constructora SPA', '77.777.777-7', 'Av. Arturo Prat 123');
+SET IDENTITY_INSERT CLIENTES OFF;
 
--- 3. Creación de Tablas con Dependencias (Con Claves Foráneas)
-CREATE TABLE USUARIOS (
-    id_usuario INT IDENTITY(1,1) PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL,
-    rut VARCHAR(12) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    id_perfil INT NOT NULL,
-    FOREIGN KEY (id_perfil) REFERENCES PERFILES(id_perfil)
-);
+SET IDENTITY_INSERT USUARIOS ON;
+INSERT INTO USUARIOS (id_usuario, nombre, rut, password, id_perfil) VALUES (1, 'Juan Luna', '20.233.222-2', '1234', 1);
+SET IDENTITY_INSERT USUARIOS OFF;
 
-CREATE TABLE PRODUCTOS (
-    sku VARCHAR(20) PRIMARY KEY,
-    nombre_producto VARCHAR(100) NOT NULL,
-    id_categoria INT NOT NULL,
-    id_ubicacion INT NOT NULL,
-    FOREIGN KEY (id_categoria) REFERENCES CATEGORIAS(id_categoria),
-    FOREIGN KEY (id_ubicacion) REFERENCES UBICACIONES(id_ubicacion)
-);
+SET IDENTITY_INSERT PEDIDOS ON;
+INSERT INTO PEDIDOS (id_pedido, fecha_creacion, estado, id_cliente, id_usuario_admin) VALUES (1, GETDATE(), 1, 1, 1);
+SET IDENTITY_INSERT PEDIDOS OFF;
 
-CREATE TABLE PEDIDOS (
-    id_pedido INT IDENTITY(1,1) PRIMARY KEY,
-    fecha_creacion DATETIME DEFAULT GETDATE(),
-    estado INT NOT NULL,
-    id_cliente INT NOT NULL,
-    id_usuario_admin INT NOT NULL,
-    FOREIGN KEY (id_cliente) REFERENCES CLIENTES(id_cliente),
-    FOREIGN KEY (id_usuario_admin) REFERENCES USUARIOS(id_usuario)
-);
+SET IDENTITY_INSERT DETALLE_PEDIDO ON;
+INSERT INTO DETALLE_PEDIDO (id_detalle, id_pedido, sku, cantidad, estado_recoleccion) VALUES (1, 1, 'SKU987', 10, 1);
+SET IDENTITY_INSERT DETALLE_PEDIDO OFF;
 
-CREATE TABLE DETALLE_PEDIDO (
-    id_detalle INT IDENTITY(1,1) PRIMARY KEY,
-    id_pedido INT NOT NULL,
-    sku VARCHAR(20) NOT NULL,
-    cantidad INT NOT NULL,
-    estado_recoleccion INT DEFAULT 0,
-    FOREIGN KEY (id_pedido) REFERENCES PEDIDOS(id_pedido),
-    FOREIGN KEY (sku) REFERENCES PRODUCTOS(sku)
-);
-GO
+SELECT id_detalle, id_pedido, sku, cantidad, estado_recoleccion 
+FROM DETALLE_PEDIDO;
