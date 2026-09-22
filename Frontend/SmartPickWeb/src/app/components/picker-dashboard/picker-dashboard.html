@@ -1,0 +1,77 @@
+<div class="picker-layout">
+
+  <header class="picker-header">
+    <div class="brand">SmartPick</div>
+
+```
+<div class="user-info">
+  <span class="badge">Picker</span>
+  <button class="btn-logout" (click)="cerrarSesion()">Salir</button>
+</div>
+```
+
+  </header>
+
+  <main class="picker-content">
+
+```
+<section class="active-route">
+  <h2>Ruta Actual: Zona Abarrotes</h2>
+
+  <div class="progress-container">
+    <div class="progress-bar" style="width: 100%"></div>
+  </div>
+
+  <p class="progress-text">Gestión de recolección en curso</p>
+</section>
+
+<section class="item-list">
+
+  <div
+    class="item-card"
+    *ngFor="let item of articulos"
+    [ngClass]="{'completed': item.recolectado}"
+  >
+    <div class="item-details">
+      <h3>{{ item.nombre }}</h3>
+      <p>SKU: {{ item.sku }}</p>
+      <p class="location">{{ item.ubicacion }}</p>
+    </div>
+
+    <div class="item-action">
+      <span class="qty">{{ item.qty }}</span>
+
+      <button
+        class="btn-check"
+        *ngIf="item.recolectado"
+        disabled
+      >
+        ✓ Listo
+      </button>
+
+      <button
+        class="btn-pick"
+        *ngIf="!item.recolectado"
+        (click)="marcarRecolectado(item)"
+      >
+        Recolectar
+      </button>
+    </div>
+  </div>
+
+  <div class="finish-order-container" *ngIf="todosListos()">
+    <button
+      class="btn-finish"
+      (click)="finalizarPedido()"
+      style="width: 100%; padding: 15px; background-color: #28a745; color: white; border: none; border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer;"
+    >
+      Finalizar Orden
+    </button>
+  </div>
+
+</section>
+```
+
+  </main>
+
+</div>
